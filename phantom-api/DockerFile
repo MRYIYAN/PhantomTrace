@@ -1,0 +1,16 @@
+FROM node:18 
+
+
+#------------------------------------#
+# Instalar dependencias de sistema
+WORKDIR /app
+#------------------------------------#
+
+#------------------------------------#
+# Instalar dependencias
+COPY . .
+RUN npm install 
+RUN npm run build
+EXPOSE 3001
+CMD ["npm", "run", "start:prod"]
+#------------------------------------#

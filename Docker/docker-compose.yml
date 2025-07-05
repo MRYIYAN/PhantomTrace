@@ -1,0 +1,146 @@
+#----------------------------------------------------------------------
+# Este es un archivo docker-compose.yml para levantar un entorno de desarrollo
+# con Laravel, MariaDB, Redis, PHPMyAdmin, una API y un Frontend de Phantom.
+#----------------------------------------------------------------------#
+version: "3.9"
+
+services:
+
+  #----------------------------------------------------------------------
+  # Servicio Redis: broker de eventos entre módulos
+  #----------------------------------------------------------------------
+  phantom-redis:
+    image: redis:7
+    container_name: phantom-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - phantomnet
+
+  #----------------------------------------------------------------------
+  # Servicio Laravel: Backend administrativo (usuarios, historial, roles)
+  #----------------------------------------------------------------------
+  phantom-laravel-back:
+    build:
+      context: ../phantom-laravel-back
+      dockerfile: Dockerfile
+    container_name: phantom-laravel-back
+    ports:
+      - "8010:80"
+    volumes:
+      - ../phantom-laravel-back:/var/www/html
+    depends_on:
+      - phantom-mariadb
+      - phantom-redis
+    networks:
+      - phantomnet
+
+  #----------------------------------------------------------------------
+  # Servicio MariaDB: base de datos para Laravel
+  #----------------------------------------------------------------------
+  phantom-mariadb:
+    image: mariadb:10.5
+    container_name: phantom-mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: phantom
+      MYSQL_USER: phantom
+      MYSQL_PASSWORD: phantom123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - phantomnet
+
+  #----------------------------------------------------------------------
+  # Servicio PHPMyAdmin: interfaz web para la base de datos MariaDB
+  #----------------------------------------------------------------------
+  phantom-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phantom-phpmyadmin
+    restart: always
+    ports:
+      - "8083:80"
+    environment:
+      PMA_HOST: phantom-mariadb
+      PMA_PORT: 3306
+    depends_on:
+      - phantom-mariadb
+    networks:
+      - phantomnet
+
+  #----------------------------------------------------------------------
+  # Servicio API (NestJS o FastAPI): WebSocket + REST API
+  #----------------------------------------------------------------------
+  phantom-api:
+    build:
+      context: ../phantom-api
+      dockerfile: Dockerfile
+    container_name: phantom-api
+    ports:
+      - "3001:3001"
+    depends_on:
+      - phantom-redis
+    networks:
+      - phantomnet
+
+  #----------------------------------------------------------------------
+  # Servicio WebSocket Bridge: reenvía mensajes de Redis al frontend
+  #----------------------------------------------------------------------
+  phantom-ws-bridge:
+    build:
+      context: ../redis-ws-bridge
+      dockerfile: Dockerfile
+    container_name: phantom-ws-bridge
+    ports:
+      - "4000:4000"  # puerto WebSocket para el frontend
+    depends_on:
+      - phantom-redis
+    networks:
+      - phantomnet
+
+  #----------------------------------------------------------------------
+  # Servicio Analyzer (Python): analiza paquetes de Redis y publica alertas
+  #----------------------------------------------------------------------
+  phantom-analyzer:
+    build:
+      context: ../analyzer-python
+      dockerfile: Dockerfile
+    container_name: phantom-analyzer
+    depends_on:
+      - phantom-redis
+    networks:
+      - phantomnet
+
+  #----------------------------------------------------------------------
+  # Servicio Simulator: genera tráfico malicioso o ataques
+  #----------------------------------------------------------------------
+  phantom-simulator:
+    build:
+      context: ../simulator
+      dockerfile: Dockerfile
+    container_name: phantom-simulator
+    cap_add:
+      - NET_RAW
+    depends_on:
+      - phantom-redis
+    networks:
+      - phantomnet
+
+#----------------------------------------------------------------------
+# Volúmenes persistentes para bases de datos
+#----------------------------------------------------------------------
+volumes:
+  mariadb_data:
+  redis_data:
+
+#----------------------------------------------------------------------
+# Red compartida para que los servicios se comuniquen entre sí
+#----------------------------------------------------------------------
+networks:
+  phantomnet:
+    driver: bridge

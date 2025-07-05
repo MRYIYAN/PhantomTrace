@@ -1,0 +1,12 @@
+FROM python:3.11 
+#------------------------------------#
+# Instalar dependencias de sistema
+WORKDIR /app
+#------------------------------------#
+
+COPY . .
+RUN chmod +x *.sh 
+
+# Archivos de entrada 
+CMD ["bas", "menu.sh"]
+#------------------------------------#  

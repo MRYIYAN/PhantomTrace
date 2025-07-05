@@ -17,6 +17,7 @@ phantomtrace/
 ├── phantom-laravel-back/   # Panel administrativo, usuarios, historial (Laravel)
 ├── simulator/              # Simulación de ataques (Python, C o Bash)
 ├── redis/                  # Redis como sistema de mensajería Pub/Sub
+├── cli-interface/          # Modo terminal CLI tipo "hacker" (Python o Rust)
 ├── docker-compose.yml      # Orquestación de servicios
 ```
 
@@ -32,6 +33,7 @@ phantomtrace/
 * ✅ Laravel como backend administrativo
 * ✅ Simulador de ataques ejecutado desde WSL o contenedores
 * ✅ App de escritorio con **Tauri** (React + Rust)
+* ✅ Modo CLI estilo hacker embebido o lanzable (`cli-interface/`)
 
 ---
 
@@ -47,6 +49,7 @@ phantomtrace/
 | 📅 Backend Admin | Laravel 10, MariaDB, Sanctum                       |
 | 📚 API Gateway   | NestJS 10 (o FastAPI), TypeScript, Axios           |
 | 💪 Escritorio    | Tauri (Rust + Webview), compatible multiplataforma |
+| 💻 CLI Interface | Python (`rich`, `curses`) o Rust (`ratatui`)       |
 | 🔮 Dev Tools     | ESLint, Prettier, Jest, PostCSS, Vite, Cargo, Bash |
 
 ---
@@ -132,6 +135,16 @@ phantomtrace/
 
 ---
 
+## 🖥️ CLI Hacker Mode (`cli-interface/`)
+
+* Interfaz tipo terminal hacker
+* Opciones de menú para escaneo, traceroute, ping, analizar tráfico
+* Implementado en Python (`rich`) o Rust (`crossterm`, `ratatui`)
+* Accede a Redis para recibir eventos o lanzar simuladores
+* Lanzable desde React con botón o desde Tauri
+
+---
+
 ## 🛀 Redis (phantom-redis)
 
 * Canal de comunicación central:
@@ -176,4 +189,4 @@ flowchart TD
 
 ---
 
-✍️ *By IanP*
+ *By IanP*
