@@ -1,4 +1,14 @@
-# PhantomTrace
+<p align="center">
+
+______ _   _   ___   _   _ _____ ________  ___  ___________  ___  _____  _____ 
+| ___ \ | | | / _ \ | \ | |_   _|  _  |  \/  | |_   _| ___ \/ _ \/  __ \|  ___|
+| |_/ / |_| |/ /_\ \|  \| | | | | | | | .  . |   | | | |_/ / /_\ \ /  \/| |__  
+|  __/|  _  ||  _  || . ` | | | | | | | |\/| |   | | |    /|  _  | |    |  __| 
+| |   | | | || | | || |\  | | | \ \_/ / |  | |   | | | |\ \| | | | \__/\| |___ 
+\_|   \_| |_/\_| |_/\_| \_/ \_/  \___/\_|  |_/   \_/ \_| \_\_| |_/\____/\____/ 
+                                                                               
+
+</p>
 
 PhantomTrace es una plataforma avanzada de **análisis de tráfico de red y trazado de ataques cibernéticos** en tiempo real, que combina tecnologías de bajo nivel como **Rust y C**, procesamiento en **Python**, comunicación asincrónica con **Redis + WebSocket**, visualización 3D interactiva en **React + Three.js**, y una arquitectura desplegable como app de escritorio mediante **Tauri**.
 
